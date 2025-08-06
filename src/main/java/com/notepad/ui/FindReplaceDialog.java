@@ -8,11 +8,14 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class FindReplaceDialog {
+    private static int indFnd = -1;
+
     public static void showFindDialog(JFrame parent, JTextArea textArea) {
         JDialog dialog = new JDialog(parent, "Find", false);
         dialog.setLayout(new BorderLayout());
@@ -30,10 +33,16 @@ public class FindReplaceDialog {
         findButton.addActionListener((ActionEvent e) -> {
             String textToFind = findField.getText();
             String textContent = textArea.getText();
-            int index = textContent.indexOf(textToFind);
-            if (index != -1) {
+
+            indFnd = indFnd == -1 ? textContent.indexOf(textToFind) : !textContent.substring(indFnd + textToFind.length() - 1 ).contains(textToFind) ? -1 : textContent.substring(indFnd + textToFind.length() - 1 ).indexOf(textToFind)  + indFnd + textToFind.length() - 1 ;
+
+            if (indFnd != -1) {
                 textArea.requestFocus();
-                textArea.select(index, index + textToFind.length());
+                textArea.select(indFnd, indFnd + textToFind.length());
+            }else{
+                textArea.requestFocus();
+                textArea.select(0, 0);
+                JOptionPane.showMessageDialog(parent, "No match Found for the word", "No match Found", JOptionPane.INFORMATION_MESSAGE , null);
             }
         });
 
